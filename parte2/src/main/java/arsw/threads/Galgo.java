@@ -22,7 +22,6 @@ public class Galgo extends Thread {
 		while (paso < carril.size()) {
     Thread.sleep(100);
 
-    // Pausa: si pausado, esperar
     synchronized(MainCanodromo.lock) {
         while (MainCanodromo.pausado) {
             MainCanodromo.lock.wait();
