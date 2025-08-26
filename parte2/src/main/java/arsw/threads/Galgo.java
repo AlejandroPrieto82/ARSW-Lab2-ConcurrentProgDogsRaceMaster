@@ -20,28 +20,27 @@ public class Galgo extends Thread {
 
 	public void corra() throws InterruptedException {
 		while (paso < carril.size()) {
-			Thread.sleep(100);
-			carril.setPasoOn(paso++);
-			carril.displayPasos(paso);
+    Thread.sleep(100);
 
-			if (paso == carril.size()) {
-    carril.finish();
-
-    synchronized(regl) {
-        // incrementar la posición de llegada de forma segura
-        int ubicacion = regl.getUltimaPosicionAlcanzada();
-        regl.setUltimaPosicionAlcanzada(ubicacion + 1);
-
-        // solo el primero será ganador
-        if (ubicacion == 1) {
-            regl.setGanador(this.getName());
+    // Pausa: si pausado, esperar
+    synchronized(MainCanodromo.lock) {
+        while (MainCanodromo.pausado) {
+            MainCanodromo.lock.wait();
         }
+    }
 
+    // Avanza el galgo
+    carril.setPasoOn(paso++);
+    carril.displayPasos(paso);
+
+    // Llegada
+    if (paso == carril.size()) {
+        carril.finish();
+        int ubicacion = regl.registrarLlegada(this.getName()); // usando método sincronizado
         System.out.println("El galgo " + this.getName() + " llegó en la posición " + ubicacion);
     }
 }
 
-		}
 	}
 
 	@Override

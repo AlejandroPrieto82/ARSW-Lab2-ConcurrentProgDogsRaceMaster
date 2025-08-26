@@ -12,11 +12,13 @@ import arsw.threads.Carril;
 
 
 public class MainCanodromo {
+    
+    public static final Object lock = new Object();
+    public static volatile boolean pausado = false;
+
 
     private static Galgo[] galgos;
-
     private static Canodromo can;
-
     private static RegistroLlegada reg = new RegistroLlegada();
 
     public static void main(String[] args) {
@@ -61,21 +63,20 @@ public class MainCanodromo {
                     }
                 });
 
-        can.setStopAction(
-                new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        System.out.println("Carrera pausada!");
-                    }
-                });
+        can.setStopAction(e -> {
+    synchronized(lock) {
+        pausado = true; 
+    }
+    System.out.println("Carrera pausada!");
+});
 
-        can.setContinueAction(
-                new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        System.out.println("Carrera reanudada!");
-                    }
-                });
+        can.setContinueAction(e -> {
+    synchronized(lock) {
+        pausado = false; 
+        lock.notifyAll(); 
+    }
+    System.out.println("Carrera reanudada!");
+});
 
     }
 
