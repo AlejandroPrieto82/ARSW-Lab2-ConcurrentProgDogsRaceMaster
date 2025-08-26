@@ -88,7 +88,7 @@ No se repite la posición de llegada de ningún galgo.
 
 **Código que usa wait y notifyAll**  
 ![Código notifyAll](img/image-2.6.png)  
-![Codigo wait](image.png)
+![Codigo wait](img/image-2.7.png.png)   
 
 **Explicación:**  
 
